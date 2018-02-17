@@ -1,4 +1,9 @@
 <resources>
-    <string name="app_name">PracticeMakesPerfect</string>
+    <string name="app_name">City Manager</string>
     <string name="action_settings">Settings</string>
+    <string name="citymanager">CityManager</string>
+    <string name="title_activity_detailed_weather">DetailedWeather</string>
+
+    <string name="add_new_website">Add New Website</string>
+    <string name="add_new_website_short">Add Website</string>
 </resources>

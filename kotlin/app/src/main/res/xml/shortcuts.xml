@@ -1,0 +1,14 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android" >
+    <shortcut
+        android:shortcutId="add_website"
+        android:icon="@drawable/weather_icon"
+        android:shortcutShortLabel="@string/add_new_website_short"
+        android:shortcutLongLabel="@string/add_new_website"
+        >
+        <intent
+            android:action="com.chernowii.practicemakesperfect.NEW_YORK"
+            android:targetPackage="com.chernowii.practicemakesperfect"
+            android:targetClass="com.chernowii.practicemakesperfect.MainActivity"
+            />
+    </shortcut>
+</shortcuts>
