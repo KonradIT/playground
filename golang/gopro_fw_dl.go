@@ -10,6 +10,8 @@ import (
 	"os"
 	"path"
 	"strings"
+	"jaytaylor.com/html2text"
+	"github.com/olekukonko/tablewriter"
 )
 
 type Firmware struct {
@@ -23,6 +25,7 @@ type Cameras struct {
 	Version      string
 	Model_string string
 	Release_date string
+	Release_html string
 }
 
 func DownloadFile(url string) error {
@@ -57,19 +60,39 @@ func main() {
 			fmt.Printf("%s", err)
 			os.Exit(1)
 		}
-
 		var firm Firmware
 		json.Unmarshal([]byte(contents), &firm)
-		for cam := range firm.Cameras {
-			fmt.Printf("- %s [%s]\n", firm.Cameras[cam].Model_string, firm.Cameras[cam].Name)
-		}
-
+		choice := ""
 		reader := bufio.NewReader(os.Stdin)
-		fmt.Print(">> Camera: ")
-		choice, _ := reader.ReadString('\n')
+		
+		if len(os.Args) > 1{
+			choice = os.Args[1]
+		} else {
+			for cam := range firm.Cameras {
+				fmt.Printf("- %s [%s]\n", firm.Cameras[cam].Model_string, firm.Cameras[cam].Name)
+			}
+			fmt.Print(">> Camera: ")
+			choice, _ = reader.ReadString('\n')
+		}
 		for cam := range firm.Cameras {
 			if strings.Contains(choice, firm.Cameras[cam].Model_string) {
-				fmt.Printf("== %s ==\nDate: %s\n", firm.Cameras[cam].Version, firm.Cameras[cam].Release_date)
+				text, err := html2text.FromString(firm.Cameras[cam].Release_html, html2text.Options{PrettyTables: true})
+				if err != nil {
+					panic(err)
+				}
+				
+				data := [][]string{
+					[]string{text, firm.Cameras[cam].Release_date},
+				}
+
+				table := tablewriter.NewWriter(os.Stdout)
+				table.SetHeader([]string{"Version", "Release-date"})
+
+				for _, v := range data {
+					table.Append(v)
+				}
+				table.Render() 
+			
 				fmt.Print(">> Download [Y/n]: ")
 				choice, _ = reader.ReadString('\n')
 				if choice == "Y\n" {
